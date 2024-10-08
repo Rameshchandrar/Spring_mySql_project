@@ -15,9 +15,9 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    sh 'docker build -t rc .'
-                    sh 'docker tag rc rameshchandrar/deploy:$BUILD_ID'
-                    sh 'docker tag rc rameshchandrar/deploy:latest'
+                    sh 'sudo docker build -t rc .'
+                    sh 'sudo docker tag rc rameshchandrar/deploy:$BUILD_ID'
+                    sh 'sudo docker tag rc rameshchandrar/deploy:latest'
                 }
             }
         }
@@ -36,10 +36,10 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
-                    sh 'docker push rameshchandrar/deploy:$BUILD_ID'
-                    sh 'docker push rameshchandrar/deploy:latest'
-                    sh 'docker rmi -f rameshchandrar/deploy:$BUILD_ID'
-                    sh 'docker rmi -f rameshchandrar/deploy:latest'
+                    sh 'sudo docker push rameshchandrar/deploy:$BUILD_ID'
+                    sh 'sudo docker push rameshchandrar/deploy:latest'
+                    sh 'sudo docker rmi -f rameshchandrar/deploy:$BUILD_ID'
+                    sh 'sudo docker rmi -f rameshchandrar/deploy:latest'
                 }
             }
         }
@@ -47,8 +47,8 @@ pipeline {
         stage('Run Docker Container') {
             steps {
                 script {
-                    sh 'docker rm -f deploy'
-                    sh 'docker run -it -d --name mytask -p 1234:1234 rameshchandrar/deploy:latest'
+                    sh 'sudo docker rm -f deploy'
+                    sh 'sudo docker run -it -d --name mytask -p 1234:1234 rameshchandrar/deploy:latest'
                 }
             }
         }
