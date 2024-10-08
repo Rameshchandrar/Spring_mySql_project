@@ -48,7 +48,7 @@ pipeline {
             steps {
                 script {
                     sh 'sudo docker rm -f deploy'
-                    sh 'sudo docker run -it -d --name mytask -p 1234:1234 rameshchandrar/deploy:latest'
+                    sh 'sudo docker run -it -d --name deployment -p 1234:1234 rameshchandrar/deploy:latest'
                 }
             }
         }
