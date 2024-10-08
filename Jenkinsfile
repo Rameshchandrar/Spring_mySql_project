@@ -16,8 +16,8 @@ pipeline {
             steps {
                 script {
                     sh 'docker build -t rc .'
-                    sh 'docker tag achuth rameshchandrar/deploy:$BUILD_ID'
-                    sh 'docker tag achuth rameshchandrar/deploy:latest'
+                    sh 'docker tag rc rameshchandrar/deploy:$BUILD_ID'
+                    sh 'docker tag rc rameshchandrar/deploy:latest'
                 }
             }
         }
