@@ -1,32 +1,56 @@
 pipeline {
     agent any
-    tools{
+    
+    tools {
         maven 'maven'
     }
+    
     stages {
-        stage('Build') {
+        stage('Prepare Build') {
             steps {
                 sh 'mvn clean package -DskipTests'
             }
         }
-        stage('deploy') {
+        
+        stage('Build Docker Image') {
             steps {
-                sh '''
-                    echo "Stopping spring application processer"
-                    sudo pkill -f target/my-shop-1.0.jar
-                    # Start the Spring application
-                    echo "Starting the Spring application..."
-                    sudo java -jar target/my-shop-1.0.jar > /dev/null 2>&1 &
-                '''
+                script {
+                    sh 'docker build -t rc .'
+                    sh 'docker tag achuth rameshchandrar/deploy:$BUILD_ID'
+                    sh 'docker tag achuth rameshchandrar/deploy:latest'
+                }
+            }
+        }
+        
+        stage('Docker Login') {
+    steps {
+        script {
+            withCredentials([usernamePassword(credentialsId: 'docker-cred', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD')]) {
+                sh "echo $DOCKER_PASSWORD | docker login -u $DOCKER_USER --password-stdin"
             }
         }
     }
-  post {
-    success {
-      echo "Deployed successfully"
-    }
-    failure {
-      echo "Failed to Deploy"
-    }
-  }
+}
+
+        
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    sh 'docker push rameshchandrar/deploy:$BUILD_ID'
+                    sh 'docker push rameshchandrar/deploy:latest'
+                    sh 'docker rmi -f rameshchandrar/deploy:$BUILD_ID'
+                    sh 'docker rmi -f rameshchandrar/deploy:latest'
+                }
+            }
+        }
+        
+        stage('Run Docker Container') {
+            steps {
+                script {
+                    sh 'docker rm -f deploy'
+                    sh 'docker run -it -d --name mytask -p 1234:1234 rameshchandrar/deploy:latest'
+                }
+            }
+        }
+   }
 }
