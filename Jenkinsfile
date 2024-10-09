@@ -16,8 +16,8 @@ pipeline {
             steps {
                 script {
                     sh 'sudo docker build -t rc .'
-                    sh 'sudo docker tag rc rameshchandrar/deploy:$BUILD_ID'
-                    sh 'sudo docker tag rc rameshchandrar/deploy:latest'
+                    sh 'sudo docker tag rc rameshchandrar/kubernetes:$BUILD_ID'
+                    sh 'sudo docker tag rc rameshchandrar/kubernetes:latest'
                 }
             }
         }
@@ -36,10 +36,10 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
-                    sh 'sudo docker push rameshchandrar/deploy:$BUILD_ID'
-                    sh 'sudo docker push rameshchandrar/deploy:latest'
-                    sh 'sudo docker rmi -f rameshchandrar/deploy:$BUILD_ID'
-                    sh 'sudo docker rmi -f rameshchandrar/deploy:latest'
+                    sh 'sudo docker push rameshchandrar/kubernetes:$BUILD_ID'
+                    sh 'sudo docker push rameshchandrar/kubernetes:latest'
+                    sh 'sudo docker rmi -f rameshchandrar/kubernetes:$BUILD_ID'
+                    sh 'sudo docker rmi -f rameshchandrar/kubernetes:latest'
                 }
             }
         }
@@ -48,7 +48,7 @@ pipeline {
             steps {
                 script {
                     sh 'sudo docker rm -f deploy'
-                    sh 'sudo docker run -it -d --name deployment -p 1234:1234 rameshchandrar/deploy:latest'
+                    sh 'sudo docker run -it -d --name deployment -p 1234:1234 rameshchandrar/kubernetes:latest'
                 }
             }
         }
