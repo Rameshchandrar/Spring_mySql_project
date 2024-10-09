@@ -16,7 +16,21 @@ spec:
     spec:
       containers:
         - name: springboot-app
-          image: prabhash1710/sample1:latest
+          image: rameshchandrar7@gmail.com/sample1:latest
           ports:
             - containerPort: 1234
           imagePullPolicy: Always
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: springboot-service
+spec:
+  ports:
+    - port: 8080
+      targetPort: 1234
+      protocol: TCP
+  selector:
+    app: springboot
+  type: NodePort
